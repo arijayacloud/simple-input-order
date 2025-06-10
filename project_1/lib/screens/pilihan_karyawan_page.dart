@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'detail_karyawan_page.dart';
 import 'package:intl/intl.dart';
-import 'dart:async'; // Tambahkan ini!
+import 'dart:async';
+import 'dart:math';
+import 'detail_karyawan_page.dart';
 
 class PilihanKaryawanPage extends StatefulWidget {
   const PilihanKaryawanPage({super.key});
@@ -13,12 +14,43 @@ class PilihanKaryawanPage extends StatefulWidget {
 class _PilihanKaryawanPageState extends State<PilihanKaryawanPage> {
   late String _currentTime;
 
+  final List<String> karyawan = [
+    'Karyawan A',
+    'Karyawan B',
+    'Karyawan C',
+    'Karyawan D',
+    'Karyawan E',
+    'Karyawan F',
+    'Karyawan G',
+    'Karyawan H',
+  ];
+
+  final List<Color> warnaPilihan = [
+    Colors.redAccent,
+    Colors.greenAccent,
+    Colors.orangeAccent,
+    Colors.purpleAccent,
+    Colors.teal,
+    Colors.blueAccent,
+    Colors.amber,
+    Colors.deepPurpleAccent,
+    Colors.pinkAccent,
+  ];
+
+  late List<Color> warnaKartu;
+
   @override
   void initState() {
     super.initState();
     _updateTime();
     Timer.periodic(const Duration(seconds: 1), (timer) {
       _updateTime();
+    });
+
+    // Acak warna untuk setiap karyawan
+    final random = Random();
+    warnaKartu = List.generate(karyawan.length, (index) {
+      return warnaPilihan[random.nextInt(warnaPilihan.length)];
     });
   }
 
@@ -32,8 +64,6 @@ class _PilihanKaryawanPageState extends State<PilihanKaryawanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> karyawan = ['Karyawan A', 'Karyawan B', 'Karyawan C', 'Karyawan D', 'Karyawan E', 'Karyawan F'];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
@@ -44,7 +74,7 @@ class _PilihanKaryawanPageState extends State<PilihanKaryawanPage> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,32 +84,40 @@ class _PilihanKaryawanPageState extends State<PilihanKaryawanPage> {
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: ListView.builder(
+              child: GridView.builder(
                 itemCount: karyawan.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // 2 kotak per baris
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 2.5,
+                ),
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailKaryawanPage(namaKaryawan: karyawan[index]),
+                  final isLight = warnaKartu[index] == Colors.white || warnaKartu[index] == Colors.grey;
+
+                  return ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailKaryawanPage(
+                            namaKaryawan: karyawan[index],
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
                         ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: warnaKartu[index],
+                      foregroundColor: isLight ? Colors.black : Colors.white,
+                      padding: const EdgeInsets.all(16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(
-                        karyawan[index],
-                        style: const TextStyle(fontSize: 18),
-                      ),
+                      elevation: 4,
+                    ),
+                    child: Text(
+                      karyawan[index],
+                      style: const TextStyle(fontSize: 16),
                     ),
                   );
                 },

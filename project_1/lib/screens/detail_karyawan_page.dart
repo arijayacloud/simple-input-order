@@ -33,7 +33,7 @@ class _DetailKaryawanPageState extends State<DetailKaryawanPage> {
       _isLoading = true;
     });
 
-    final url = Uri.parse('http://192.168.1.5:8000/api/karyawans');
+    final url = Uri.parse('http://apppenjualan791.my.id/api/karyawans');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -174,7 +174,7 @@ class _DetailKaryawanPageState extends State<DetailKaryawanPage> {
                                       await _simpanData(hargaJual, modal);
                                     },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blueAccent,
+                                backgroundColor: Colors.white,
                               ),
                               child: const Text('Benar'),
                             ),
